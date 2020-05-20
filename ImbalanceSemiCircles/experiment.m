@@ -89,13 +89,7 @@ for trial = 1:options.num_trials
     end
 end
     
-setup_ptb;
-[tw, th] = Screen('WindowSize', window); %Get width and height of screen
 
-opts = {'duration', .1,... %duration of each contrast sample in s
-    'ppd', options.ppd,... %pixels per degree
-    'xpos', [-(tw/options.ppd)/5 (tw/options.ppd)/5],... %[-(tw/options.ppd)/24 (tw/options.ppd)/24],... %horizontal postion of the two gratings from center of the screen
-    'ypos', [0, 0]}; %vertical postion from center
 
 try    
     options.datadir = fullfile(options.datadir, num2str(setup.participant));
@@ -121,6 +115,14 @@ try
         throw(MException('EXP:Quit', 'User request quit'));
     end
     
+    setup_ptb;
+    [tw, th] = Screen('WindowSize', window); %Get width and height of screen
+
+    opts = {'duration', .1,... %duration of each contrast sample in s
+        'ppd', options.ppd,... %pixels per degree
+        'xpos', [-(tw/options.ppd)/6 (tw/options.ppd)/6],... %[-(tw/options.ppd)/24 (tw/options.ppd)/24],... %horizontal postion of the two gratings from center of the screen
+        'ypos', [0, 0]}; %vertical postion from center
+    
     %-------------
     % Present instructions on the screen
     %-------------
@@ -132,7 +134,7 @@ try
     line5 = 'Falls Sie richtig geantwortet haben, hören Sie einen kurzen, hohen Ton. \n \n';
     line6 = 'Falls Sie falsch geantwortet haben, hören Sie einen kurzen, tiefen Ton. \n \n';
     line7 = 'Falls Sie zu früh oder zu spät geantwortet haben, hören Sie einen langen, tiefen Ton. \n \n';
-    line8 = 'Versuchen Sie nicht zu blinzeln solange das Kreuz GRÜN ist. \n  \n';
+    line8 = 'Versuchen Sie nicht zu blinzeln solange das Kreuz ROT ist. \n  \n';
     line9 = 'Wenn das Kreuz BLAU ist, dürfen Sie blinzeln. \n \n';
     line10 = 'Drücken Sie eine Taste, um zu beginnen.';
     DrawFormattedText(window, [line1 line2 line3 line4 line5 line6 line7 line8 line9 line10],...
