@@ -7,7 +7,6 @@ sca; close all; clearvars; clear all; clc; dbstop if error;
 PsychPortAudio('Close');
 %% Global parameters.
 rng('shuffle')
-
 setup; % load various setup parameters
 setup.do_trigger = false;% set to true if scanning in the EEG lab to send triggers
 setup.Eye = false; % set to true if using Eyelink
@@ -46,6 +45,7 @@ end
 
 session_identifier =  datestr(now, 30);
 %    setup.datetime_day = datestr(now, 'yyyy-mm-dd');
+
 setup.nblocks = 6;
 % on half of the blocks the side with the stronger contrast will be chosen at random on the other half it will be repeated with 80% probability (i.e. alternated with 20% probability)
 if exist(sprintf('trans_prob_counter_P%d_s%d.mat', setup.participant, setup.session), 'file') == 2,
@@ -87,23 +87,17 @@ for trial = 1:options.num_trials
     end
 end
     
-setup_ptb;
-[tw, th] = Screen('WindowSize', window);
-
-opts = {'duration', .1,...
-    'ppd', options.ppd,...%31.9,... % for MEG display at 65cm viewing distance
-    'xpos', [-(tw/options.ppd)/4 (tw/options.ppd)/4],... %[-8, 8],...
-    'ypos', [0, 0]}; % Position Gabors in the lower hemifield to get activation in the dorsal pathaway
 
 
 try
+    options.datadir = 'data/';
     options.datadir = fullfile(options.datadir, num2str(setup.participant));
     [~, ~, ~] = mkdir(options.datadir);
     quest_file = fullfile(options.datadir, 'quest_results.mat');
     session_struct = struct('q', [], 'results', [], 'date', datestr(clock));
     results_struct = session_struct;
     session_identifier =  datestr(now, 30);
-    
+
     % load quest parameters
     append_data = false;
     if exist(quest_file, 'file') == 2
@@ -112,13 +106,21 @@ try
             append_data = true;
         end
     end
-    
+
     fprintf('QUEST Parameters\n----------------\nThreshold Guess: %1.4f\nSigma Guess: %1.4f\n',...
         quest.threshold_guess, quest.threshold_guess_sigma)
     if ~strcmp(input('OK? [y/n] ', 's'), 'y')
         throw(MException('EXP:Quit', 'User request quit'));
 
-    end
+    end    
+    
+    setup_ptb;
+    [tw, th] = Screen('WindowSize', window);
+
+    opts = {'duration', .1,...
+        'ppd', options.ppd,...%31.9,... % for MEG display at 65cm viewing distance
+        'xpos', [-(tw/options.ppd)/4 (tw/options.ppd)/4],... %[-8, 8],...
+        'ypos', [0, 0]}; % Position Gabors in the lower hemifield to get activation in the dorsal pathaway
 
     %-------------
     % Present instructions on the screen
@@ -131,7 +133,7 @@ try
     line5 = 'Falls Sie richtig geantwortet haben, hören Sie einen kurzen, hohen Ton. \n \n';
     line6 = 'Falls Sie falsch geantwortet haben, hören Sie einen kurzen, tiefen Ton. \n \n';
     line7 = 'Falls Sie zu früh oder zu spät geantwortet haben, hören Sie einen langen, tiefen Ton. \n \n';
-    line8 = 'Versuchen Sie nicht zu blinzeln solange das Kreuz GRÜN ist. \n  \n';
+    line8 = 'Versuchen Sie nicht zu blinzeln solange das Kreuz ROT ist. \n  \n';
     line9 = 'Wenn das Kreuz BLAU ist, dürfen Sie blinzeln. \n \n';
     line10 = 'Drücken Sie eine Taste, um zu beginnen.';
     DrawFormattedText(window, [line1 line2 line3 line4 line5 line6 line7 line8 line9 line10],...
@@ -149,6 +151,15 @@ try
         Eyelink('message', 'Start recording Eyelink');
     end
     %% Set up QUEST
+    % QUEST Parameters
+    quest.pThreshold = .75; % Performance level and other QUEST parameters
+    quest.beta = 3.5;
+    quest.delta = 0.5/128;
+    quest.gamma = 0.15;
+    quest.threshold_guess = 0.025;
+    quest.threshold_guess_sigma = 0.25;
+
+
     q = QuestCreate(quest.threshold_guess, quest.threshold_guess_sigma, quest.pThreshold, quest.beta, quest.delta, quest.gamma);
     q.updatePdf = 1;
     

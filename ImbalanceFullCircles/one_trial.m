@@ -92,12 +92,14 @@ red = inv(rgb2ntsc_matrix)*[r1; r2; r3];
 blue = inv(rgb2ntsc_matrix)*[r1; b2; b3];
 green = inv(rgb2ntsc_matrix)*[r1; g2; g3];
 
+
+
 ifi = Screen('GetFlipInterval', window);
 
 %% Baseline Delay period
 
 % Draw the fixation point
-fix.color = green; % get ready
+fix.color = red; % get ready
 window      = drawFixation(window, windowRect, fix); % fixation
 Screen('DrawingFinished', window); % helps with managing the flip performance
 vbl = Screen('Flip', window);
@@ -150,10 +152,14 @@ while ~((GetSecs - stimulus_onset) >= (length(contrast_left))*duration-2*ifi)
     Screen('BlendFunction', window, 'GL_SRC_ALPHA', 'GL_ONE_MINUS_SRC_ALPHA');
     
     % Draw the fixation point
-    fix.color = green; % get ready
+    fix.color = red; % get ready
     window      = drawFixation(window, windowRect, fix); % fixation
     Screen('DrawingFinished', window); % helps with managing the flip performance
     
+%     imageArray = Screen('GetImage', window);
+%     % imwrite is a Matlab function, not a PTB-3 function
+%     imwrite(imageArray, 'FullCircles.jpg')
+
     % Flip our drawing to the screen
     vbl = Screen('Flip', window, vbl + (waitframes-.5) * ifi);
     flush_kbqueues(kbqdev);
@@ -199,7 +205,7 @@ timing.animation = dynamic;
 
 %%% Get choice
 % Draw the fixation point
-fix.color = green; % get ready
+fix.color = red; % get ready
 window      = drawFixation(window, windowRect, fix); % fixation
 Screen('DrawingFinished', window); % helps with managing the flip performance
 vbl = Screen('Flip', window, vbl + target );
@@ -291,7 +297,7 @@ end
 
 PsychPortAudio('FillBuffer', pahandle.h, beep);
 timing.post_response_delay_start = vbl;
-fix.color = green; 
+fix.color = red; 
 window      = drawFixation(window, windowRect, fix); % fixation
 Screen('DrawingFinished', window); % helps with managing the flip performance
 waitframes = (post_response_delay/ifi) - 1;
@@ -325,7 +331,7 @@ timing.feedback_start = t1;
 %%%%%
 [actualStartTime, ~, ~, estStopTime] = PsychPortAudio('Stop', pahandle.h, 1, 1);
 timing.feedback_delay_stop = estStopTime;
-fix.color = green; % get ready
+fix.color = red; % get ready
 window      = drawFixation(window, windowRect, fix); % fixation
 Screen('DrawingFinished', window); % helps with managing the flip performance
 waitframes = (feedback_delay/ifi) - 1;
@@ -336,7 +342,7 @@ window      = drawFixation(window, windowRect, fix); % fixation
 Screen('DrawingFinished', window); % helps with managing the flip performance
 vbl = Screen('Flip', window, vbl + (waitframes - 0.5) * ifi);
 waitframes = (rest_delay/ifi);
-fix.color = green; % get ready
+fix.color = red; % get ready
 window      = drawFixation(window, windowRect, fix); % fixation
 Screen('DrawingFinished', window); % helps with managing the flip performance
 vbl = Screen('Flip', window, vbl + (waitframes - 0.5) * ifi);

@@ -3,23 +3,7 @@ KbName('UnifyKeyNames');
 
 %PsychDefaultSetup(2);
 timings = {};
-screenNumber = min(Screen('Screens'));
-white = WhiteIndex(screenNumber);
-black = BlackIndex(screenNumber);
-grey = white / 2;
-% Open the screen
 
-% skip PTB checks
-
-Screen('Preference', 'Verbosity', 0);
-Screen('Preference', 'SkipSyncTests', 1);
-Screen('Preference', 'VisualDebugLevel', 0);
-% suppress warnings to the pput window
-Screen('Preference', 'SuppressAllWarnings', 1);
-
-%Screen('Preference', 'SkipSyncTests', 0);
-
-[window, windowRect] = Screen('OpenWindow', screenNumber, grey);
 
 
 %[window, windowRect] = Screen('OpenWindow', screenNumber, grey, [0, 0, 1000, 800]);
